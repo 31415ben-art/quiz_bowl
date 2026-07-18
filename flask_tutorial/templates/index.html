@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Quiz Bowl</title>
+</head>
+
+<body>
+
+    <h1>Quiz Bowl</h1>
+
+    <p>{{ question }}</p>
+
+    <form action="/answer" method="post">
+        <input type="text" name="user_answer">
+        <button type="submit".
+            Submit
+    </button>
+    </form>
+
+    <form action="/next" method="post">
+    <button>Next Question</button>
+    </form>
+
+    <p>{{ result }}</p>
+    <p>Score: {{ score }}</p>
+
+</body>
+
+</html>
