@@ -3,41 +3,77 @@ import json
 import time
 import keyboard
 import jellyfish
+import threading
 
 tossup_url = "https://www.qbreader.org/api/random-tossup?"
 
-def main():
-    number = int(input("How many tossups? "))
-    cat = int(input("Category: \nScience = 1\nHistory = 2\nLiterature = 3\n\n"))
-    diff = int(input("Difficulty: "))
-    strict = (3) #change later
-    data = get_data(number, cat, diff)  
-    if not cat or cat == 1:  # redefining cat to for api, later loop until something is chosen
-        cat == "Science"
-    elif cat == 2:
-        cat = "History"
-    elif cat == 3:
-        cat = "Literature"
-    else:
-        cat == "Science"
-
-    get_data(number, cat, diff)
-    print_question(data, strict)
+# test git commit
 
 
 
-   
+class Game:
+    def __init__(
+        self,
+        score=0,
+        user=None,
+        powers=None,
+        not_powers=None,
+        current_question=None,
+        cat=None,
+        diff=None,
+        speed=None,
+        strict=0
+    ):
+        self.score = score
+        self.user = user
+        self.powers = powers
+        self.not_powers = not_powers
+        self.current_question = current_question
+        self.cat = cat if cat else []
+        self.diff = diff if diff else []
+        self.speed = speed
+        self.strict = strict
 
-def get_data(number, cat, diff):
+class Question:
+    def __init__(self, text, answer, cat, diff):
+        self.text = text
+        self.answer = answer
+        self.cat = cat
+        self.diff = diff
+
+        self.position = 0
+        self.done = False
+
+    
+    
+    def check(self, user_answer, strict):
+        correct_clean = self.answer.strip().lower()
+        user_answer = user_answer.lower().strip()
+        return jellyfish.levenshtein_distance(correct_clean, user_answer) <= strict
+    
+
+
+def get_question(number, cat, diff):
+
     params = {
         "number": number,
         "categories": cat,
         "difficulties": diff,
-        }
+    }
 
     response = requests.get(tossup_url, params=params)
     data = response.json()
-    return data
+
+    tossup = data["tossups"][0]
+
+    return Question(
+        tossup["question"],
+        tossup["answer"],
+        tossup["category"],
+        tossup["difficulty"]
+    )
+   
+
 
 def check_answer(correct_answer, user_answer, strict):
     error = jellyfish.levenshtein_distance(correct_answer, user_answer)
@@ -46,28 +82,30 @@ def check_answer(correct_answer, user_answer, strict):
     else:
         return False
     
-def print_question(data, strict):
+#def print_question(data, strict):
     i = 0
     tossup = data["tossups"][0]["question"].split()
     correct_answer = data["tossups"][0]["answer"]
+
+    
 
     while i < len(tossup):
         if keyboard.is_pressed("space"):
             user_answer = input("\nAnswer: ").strip().lower()
             if check_answer(correct_answer, user_answer, strict):
                 print("\n\nCorrect!!!\n\n")
-                break
+                return True
             else:
                 print("\n\nIncorrect\n\n")
-        print(tossup[i])
-        i += 1
+        print(tossup[i], )
         time.sleep(0.1)
     
     
+    
             
     
             
-        
+               
 
     
     
