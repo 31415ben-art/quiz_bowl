@@ -18,17 +18,32 @@ class Game:
         cat=None,
         diff=None,
         speed=None,
+        user_answer=None,
         strict=0
     ):
         self.score = score
         self.user = user
         self.powers = powers
         self.not_powers = not_powers
+        self.user_answer = user_answer
         self.current_question = current_question
         self.cat = cat if cat else []
         self.diff = diff if diff else []
         self.speed = speed
         self.strict = strict
+
+    def next_question(self):
+        self.current_question = get_data(1, self.cat, self.diff)
+
+    def submit_answer(self, user_answer):
+        correct = self.current_question.check(user_answer, self.strict)
+
+        if correct:
+            self.score += 10
+        else:
+            self.score -= 5
+
+        return correct
 
 class Question:
     def __init__(self, text, answer, cat, diff):
@@ -39,9 +54,7 @@ class Question:
 
         self.position = 0
         self.done = False
-
-    
-    
+   
     def check(self, user_answer, strict):
         user_answer = user_answer.strip().lower()
         answers = re.findall(r"<u>(.*?)</u>", self.answer)
