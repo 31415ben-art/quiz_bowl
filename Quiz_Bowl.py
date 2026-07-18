@@ -1,13 +1,9 @@
 import requests
 import json
-import time
-import keyboard
 import jellyfish
-import threading
-
+import re
 tossup_url = "https://www.qbreader.org/api/random-tossup?"
 
-# test git commit
 
 
 
@@ -47,13 +43,25 @@ class Question:
     
     
     def check(self, user_answer, strict):
-        correct_clean = self.answer.strip().lower()
-        user_answer = user_answer.lower().strip()
-        return jellyfish.levenshtein_distance(correct_clean, user_answer) <= strict
+        user_answer = user_answer.strip().lower()
+        answers = re.findall(r"<u>(.*?)</u>", self.answer)
+
+        if not answers:
+            answers = [self.answer]
+
+        for answer in answers:
+            answer = answer.lower().strip()
+
+            similarity = jellyfish.jaro_winkler_similarity(
+                answer, user_answer
+            )
+            
+            if similarity >= strict:
+                return True
+  
+        return False
     
-
-
-def get_question(number, cat, diff):
+def get_data(number, cat, diff):
 
     params = {
         "number": number,
@@ -73,34 +81,24 @@ def get_question(number, cat, diff):
         tossup["difficulty"]
     )
    
+game = Game()
 
+while True:
+    game.current_question = get_data(1, ["Science"], ["1"])
 
-def check_answer(correct_answer, user_answer, strict):
-    error = jellyfish.levenshtein_distance(correct_answer, user_answer)
-    if error <= strict:
-        return True
+    print(game.current_question.text)
+
+    user_answer = input("Answer: ")
+
+    if game.current_question.check(user_answer, 0.8):
+        print("Correct")
+        game.score += 10
     else:
-        return False
-    
-#def print_question(data, strict):
-    i = 0
-    tossup = data["tossups"][0]["question"].split()
-    correct_answer = data["tossups"][0]["answer"]
+        print("Incorrect")
+        game.score -= 5
 
-    
+    print(game.score)
 
-    while i < len(tossup):
-        if keyboard.is_pressed("space"):
-            user_answer = input("\nAnswer: ").strip().lower()
-            if check_answer(correct_answer, user_answer, strict):
-                print("\n\nCorrect!!!\n\n")
-                return True
-            else:
-                print("\n\nIncorrect\n\n")
-        print(tossup[i], )
-        time.sleep(0.1)
-    
-    
     
             
     
