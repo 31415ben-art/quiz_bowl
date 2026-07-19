@@ -14,11 +14,11 @@ class Game:
         powers=None,
         not_powers=None,
         current_question=None,
-        cat=None,
-        diff=None,
+        cat=["Science"],
+        diff=["1"],
         speed=None,
         user_answer=None,
-        strict=0
+        strict=0.85
     ):
         self.score = score
         self.user = user

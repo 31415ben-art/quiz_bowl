@@ -5,14 +5,14 @@ app = Flask(__name__)
 
 game = Game()
 
-game.cat = ["Science"]
-game.diff = ["1"]
-strict = 0.8
+
 
 @app.route("/")
 def home():
     if game.current_question is None:
         game.next_question()
+
+
     return render_template(
         "index.html",
         question=game.current_question.text,
@@ -38,6 +38,14 @@ def answer():
         result=result,
         score = game.score
     )
+
+@app.route("/settings", methods=["POST"])
+def set_settings():
+    game.cat = request.form.getlist("cat")
+    game.diff = request.form["diff"]
+    game.strict = float(request.form["strict"])
+
+    return redirect(url_for("home"))
 
 @app.route("/next", methods=["POST"])
 def next():

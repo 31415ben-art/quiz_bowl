@@ -6,7 +6,6 @@ tossup_url = "https://www.qbreader.org/api/random-tossup?"
 
 
 
-
 class Game:
     def __init__(
         self,
@@ -93,32 +92,24 @@ def get_data(number, cat, diff):
         tossup["category"],
         tossup["difficulty"]
     )
-   
-game = Game()
 
-while True:
-    game.current_question = get_data(1, ["Science"], ["1"])
 
-    print(game.current_question.text)
+def test():
 
-    user_answer = input("Answer: ")
+    game = Game()
 
-    if game.current_question.check(user_answer, 0.8):
-        print("Correct")
-        game.score += 10
-    else:
-        print("Incorrect")
-        game.score -= 5
+    while True:
+        game.current_question = get_data(1, ["Science"], ["1"])
 
-    print(game.score)
+        print(game.current_question.text)
 
-    
-            
-    
-            
-               
+        user_answer = input("Answer: ")
 
-    
-    
-if __name__ == "__main__":
-    main()
+        if game.current_question.check(user_answer, 0.8):
+            print("Correct")
+            game.score += 10
+        else:
+            print("Incorrect")
+            game.score -= 5
+
+        print(game.score)

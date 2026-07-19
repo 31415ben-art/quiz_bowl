@@ -13,14 +13,43 @@
 
     <form action="/answer" method="post">
         <input type="text" name="user_answer">
-        <button type="submit".
+        <button type="submit">
             Submit
     </button>
     </form>
 
     <form action="/next" method="post">
-    <button>Next Question</button>
+    <button type="submit">Next Question</button>
     </form>
+
+    <form action="/settings" method="post">
+
+    <label>Categories:</label><br>
+
+    <input type="checkbox" name="cat" value="Science">
+    <label>Science</label><br>
+
+    <input type="checkbox" name="cat" value="History">
+    <label>History</label><br>
+
+    <input type="checkbox" name="cat" value="Literature">
+    <label>Literature</label><br>
+
+    <select name="diff">
+        <option value="1">Middle School</option>
+        <option value="3">High School</option>
+        <option value="5">College</option>
+    </select>
+
+    <select name="strict">
+        <option value="0.7">Noob</option>
+        <option value="0.85">Pro</option>
+        <option value="0.9">Hacker</option>
+    </select>  
+
+    <button type="submit">Save</button>
+</form>
+
 
     <p>{{ result }}</p>
     <p>Score: {{ score }}</p>
