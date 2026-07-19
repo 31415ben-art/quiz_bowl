@@ -3,56 +3,199 @@
 
 <head>
     <title>Quiz Bowl</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .question-box {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            border-radius: 10px;
+            padding: 12px 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .result {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .score {
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        form {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .answer-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        button {
+            background: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .next-form button {
+            background: #7f8c8d;
+            width: 100%;
+        }
+
+        .next-form button:hover {
+            background: #636e72;
+        }
+
+        .settings-form label {
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 12px 0 18px;
+        }
+
+        .checkbox-group label {
+            font-weight: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+        }
+
+        .settings-form button {
+            width: 100%;
+            background: #27ae60;
+        }
+
+        .settings-form button:hover {
+            background: #219150;
+        }
+
+        .current-settings {
+            text-align: center;
+            color: #555;
+            font-size: 0.9em;
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 
 <body>
 
     <h1>Quiz Bowl</h1>
 
-    <p>{{ question }}</p>
+    <div class="question-box">{{ question }}</div>
 
-    <form action="/answer" method="post">
-        <input type="text" name="user_answer">
-        <button type="submit">
-            Submit
-    </button>
+    <div class="status-row">
+        <p class="result">{{ result }}</p>
+        <p class="score">Score: {{ score }}</p>
+    </div>
+
+    <form action="/answer" method="post" class="answer-form">
+        <input type="text" name="user_answer" placeholder="Type your answer...">
+        <button type="submit">Submit</button>
     </form>
 
-    <form action="/next" method="post">
-    <button type="submit">Next Question</button>
+    <form action="/next" method="post" class="next-form">
+        <button type="submit">Next Question</button>
     </form>
 
-    <form action="/settings" method="post">
+    <p class="current-settings">
+        Categories: {{ ", ".join(selected_cats) if selected_cats else "None selected" }}
+    </p>
 
-    <label>Categories:</label><br>
+    <form action="/settings" method="post" class="settings-form">
 
-    <input type="checkbox" name="cat" value="Science">
-    <label>Science</label><br>
+        <label>Categories:</label>
+        <div class="checkbox-group">
+            <input type="checkbox" name="cat" value="Science" {{ "checked" if "Science" in selected_cats else "" }}> Science
+            <input type="checkbox" name="cat" value="History" {{ "checked" if "History" in selected_cats else "" }}> History
+            <input type="checkbox" name="cat" value="Literature" {{ "checked" if "Literature" in selected_cats else "" }}> Literature
+        </div>
 
-    <input type="checkbox" name="cat" value="History">
-    <label>History</label><br>
+        <select name="diff">
+            <option value="1">Middle School</option>
+            <option value="3">High School</option>
+            <option value="5">College</option>
+        </select>
 
-    <input type="checkbox" name="cat" value="Literature">
-    <label>Literature</label><br>
+        <select name="strict">
+            <option value="0.7">Noob</option>
+            <option value="0.85">Pro</option>
+            <option value="0.9">Hacker</option>
+        </select>
 
-    <select name="diff">
-        <option value="1">Middle School</option>
-        <option value="3">High School</option>
-        <option value="5">College</option>
-    </select>
-
-    <select name="strict">
-        <option value="0.7">Noob</option>
-        <option value="0.85">Pro</option>
-        <option value="0.9">Hacker</option>
-    </select>  
-
-    <button type="submit">Save</button>
-</form>
-
-
-    <p>{{ result }}</p>
-    <p>Score: {{ score }}</p>
+        <button type="submit">Save</button>
+    </form>
 
 </body>
 

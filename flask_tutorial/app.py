@@ -16,7 +16,8 @@ def home():
     return render_template(
         "index.html",
         question=game.current_question.text,
-        answer=game.current_question.answer
+        answer=game.current_question.answer,
+        selected_cats=game.cat
     )
 
 @app.route("/answer", methods=["POST"])
@@ -29,6 +30,9 @@ def answer():
         result = "Correct!"
     else:
         result = "Incorrect!"
+
+    game.next_question()
+    question = game.current_question.text
     
     
 
@@ -36,7 +40,8 @@ def answer():
         "index.html",
         question=question,
         result=result,
-        score = game.score
+        score = game.score,
+        selected_cats=game.cat
     )
 
 @app.route("/settings", methods=["POST"])
